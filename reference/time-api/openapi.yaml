@@ -17,8 +17,9 @@ paths:
       required: true
       type: string
     get:
-      summary: Gets a timestamp by Id
-      tags: []
+      summary: Get a timestamp by Id
+      tags:
+        - Timestamps
       responses:
         '200':
           description: OK
@@ -28,23 +29,39 @@ paths:
                 $ref: ./models/Timestamp/timestampresponse.v1.yaml
       operationId: getTimestampById
     delete:
-      summary: Deletes a timestamp
+      summary: Delete a timestamp
       responses:
         '200':
           description: The timestamp was deleted
         '404':
           description: There is no timestamp with this id
       operationId: deleteTimestamp
-    post:
-      summary: Updates a timestamp
+    put:
+      summary: Update a timestamp
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./models/Timestamp/timestampresponse.v1.yaml
+        '404':
+          description: Not Found
   /timestamps:
     get:
-      summary: Gets a list of timestamps
-      tags: []
+      summary: Get a list of timestamps
+      tags:
+        - Timestamps
       responses: {}
+    post:
+      summary: Create a new timestamp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./models/Timestamp/timestampresponse.v1.yaml
   '/timestamps/{begin}/{end}':
     parameters:
       name: end
@@ -52,8 +69,35 @@ paths:
       required: true
       type: string
     get:
-      summary: Retrieves all timestamps in a given interval
-      tags: []
-      responses: {}
+      summary: Retrieve all timestamps in a given interval
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./models/Timestamp/timestampresponse.v1.yaml
+      description: "## Examples\n\n~~~\nGET /timestamps/2020-01/2020-06\n~~~\nGets all timestamps between `2020-01-01T00:00:00` and `2020-06-30T23:59:59` in their respective local time. \n\nNote that these may extend the given interval in UTC: A timestamp with the local time `2020-01-01T00:00:00` in Helsinki will be included in the result set, even if it exceeds the date range in UTC (UTC value is `2019-12-31T22:00:00Z`).\n \n~~~\nGET /timestamps/2019-04/2020-01-31T14:00?ref=utc\n~~~\nGets all timestamps between `2019-04-01T00:00:00` and `2020-01-31T14:00:59` as seen in UTC\n\n~~~\nGET /timestamps/null/2020?ref=Europe%2FBerlin\n~~~\nGets all timestamps until `2020-12-31T23:59:59` as seen in the timezone `Europe/Berlin`\n\nTODO: How to query only those timestamps which are assigned to that timezone?\n\n`GET /timestamps/2010/2020/Europe%2FBerlin` ?\n\n\n~~~\nGET /timestamps/2020/null?scope=punch-event&ref=Europe2%FHelsinki&zone=Europe%2FMoscow\n~~~\nGets all timestamps of scope `punch-event` which where recorded in timezone `Europe/Moscow`, starting from `2020-01-01T00:00:00` (as seen in `Europe/Helsinki`)\n\n~~~\nGET /timestamps/2020-02-20/P2W\n~~~\nGets all timestamps from `2020-02-20T00:00:00` until (and including) `2020-03-05T00:00:00` (2 weeks after start, respecting that 2020 is a leap year)"
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: ref
+          description: reference timezone to convert local time to (defaults to server time zone)
+        - schema:
+            type: string
+          in: query
+          name: scope
+          description: find timestamps only for the given scope
+        - schema:
+            type: string
+          in: query
+          name: tenant
+          description: find timestamps only for the given tenant
+      requestBody: {}
+    tags:
+      - Timestamps
 components:
   schemas: {}
