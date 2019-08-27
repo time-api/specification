@@ -1,0 +1,59 @@
+openapi: 3.0.0
+info:
+  title: Time API
+  version: '1.0'
+  contact:
+    name: Timicx GmbH
+    url: 'https://www.timicx.de'
+    email: contact@timicx.de
+  description: 'Time API is a microservice API for storing time-related data, primary for time tracking applications. It handles timestamps as well as intervals.'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  '/timestamps/{id}':
+    parameters:
+      name: id
+      in: path
+      required: true
+      type: string
+    get:
+      summary: Gets a timestamp by Id
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./models/Timestamp/timestampresponse.v1.yaml
+      operationId: getTimestampById
+    delete:
+      summary: Deletes a timestamp
+      responses:
+        '200':
+          description: The timestamp was deleted
+        '404':
+          description: There is no timestamp with this id
+      operationId: deleteTimestamp
+    post:
+      summary: Updates a timestamp
+      responses:
+        '200':
+          description: OK
+  /timestamps:
+    get:
+      summary: Gets a list of timestamps
+      tags: []
+      responses: {}
+  '/timestamps/{begin}/{end}':
+    parameters:
+      name: end
+      in: path
+      required: true
+      type: string
+    get:
+      summary: Retrieves all timestamps in a given interval
+      tags: []
+      responses: {}
+components:
+  schemas: {}

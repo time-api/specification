@@ -1,0 +1,41 @@
+title: TimestampResponse
+type: object
+description: A timestamp as retured by the API
+properties:
+  id:
+    type: string
+    example: 507f191e810c19729de860ea
+    description: Unique Id
+  tenant:
+    type: string
+    default: null
+  scope:
+    type: string
+    default: null
+  time:
+    type: string
+    format: date-time
+    example: '2019-08-26T14:16:21+02:00'
+    description: Local time with offset to UTC
+  localTime:
+    type: string
+    description: 'Local time, without UTC offset'
+    format: date-time
+    example: '2019-08-26T14:16:21'
+  utc:
+    type: string
+    format: date-time
+    example: '2019-08-26T12:16:21Z'
+    description: Timestamp value in Coordinated Universal Time (UTC)
+  zone:
+    type: string
+    description: 'Timezone name, as specified in the tz database'
+    example: Europe/Berlin
+  attributes:
+    type: object    
+required:
+  - id
+  - time
+  - localTime
+  - utc
+  - zone
